@@ -2,95 +2,94 @@
 //! Braincum Compiler
 //! Braincum designed & originally implemented by qexat (Clarisse) @ github.com/qexat
 //! Braincum compiler made by blyxyas (Alex) @ github.com/blyxyas
+//!
+//! As of this day, the project is very recent, the docs are just out. So I'm going to just improvise their following until the creator updates their project to add more information (some things are a little bit vague.)
 
-use std::fs;
 use clap::Parser;
+use std::fs;
+
+mod compiler;
 
 #[derive(Parser, Debug)]
 struct Args {
-	inputfile: String,
-	#[clap(short)]
-	outputfile: String,
+    inputfile: String,
+    #[clap(short)]
+    outputfile: String,
 }
 
-enum Tokens {
-	Ref,
-	Val,
-	StartLoop,
-	EndLoop,
-	OpenScope,
-	CloseScope,
-	IncVR,
-	DecVR,
-	ResVR,
-	OppVR,
-	Deref,
-	CharFn,
-	StrFn,
-	ShiftR,
-	ShiftL,
-	PrintVRChar,
-	AskInt,
-	ThrowCode,
-	PrintVRInt,
-	PrintNStr,
-	PrintLastInpOrAsk,
-	AskStr,
-	Rand,
-	SumAll,
-	MulVxR,
-	Comment
+#[derive(PartialEq)]
+enum Token {
+    Ref,
+    Val,
+    StartLoop,
+    EndLoop,
+    OpenScope,
+    CloseScope,
+    IncVR,
+    DecVR,
+    ResVR,
+    OppVR,
+    Deref,
+    CharFn,
+    StrFn,
+    ShiftR,
+    ShiftL,
+    PrintVRChar,
+    AskInt,
+    ThrowCode,
+    PrintVRInt,
+    PrintNStr,
+    PrintLastInpOrAsk,
+    AskStr,
+    Rand,
+    SumAll,
+    MulVxR,
+    Comment,
 }
 
 fn main() {
-	let args = Args::parse();
+    let args = Args::parse();
     // Read file
-	let data = fs::read_to_string(&args.inputfile).expect(&format!("Couldn't read file {}", &args.inputfile));
-	let parsed: Vec<Tokens> = parse(data);
-	let compiled = compile(parsed);
+    let data = fs::read_to_string(&args.inputfile)
+        .expect(&format!("Couldn't read file {}", &args.inputfile));
+    let parsed: Vec<Token> = parse(data);
+    let compiled = compile(parsed);
 }
 
-fn parse(data: String) -> Vec<Tokens> {
-	use Tokens::*;
-	let mut TokenTree: Vec<Tokens> = Vec::new();
-	for ch in data.chars() {
-		// Check if char is valid, else, it's a comment.
-		TokenTree.push(match ch {
-			'&' => Ref,
-			'$' => Val,
-			'[' => StartLoop,
-			']' => EndLoop,
-			'{' => OpenScope,
-			'}' => CloseScope,
-			'+' => IncVR,
-			'-' => DecVR,
-			'^' => ResVR,
-			'~' => OppVR,
-			'@' => Deref,
-			'\'' => CharFn,
-			'"' => StrFn,
-			'>' => ShiftR,
-			'<' => ShiftL,
-			'.' => PrintVRChar,
-			',' => AskInt,
-			'!' => ThrowCode,
-			'#' => PrintVRInt,
-			':' => PrintNStr,
-			';' => PrintLastInpOrAsk,
-			'?' => AskStr,
-			'r' => Rand,
-			's' => SumAll,
-			'm' => MulVxR,
+fn parse<'a>(data: String) -> Vec<Token> {
+    use Token::*;
+    let mut TokenTree: Vec< Token> = Vec::new();
+    for ch in data.chars() {
+        // Check if char is valid, else, it's a comment.
+        TokenTree.push(match ch {
+            '&' => Ref,
+            '$' => Val,
+            '[' => StartLoop,
+            ']' => EndLoop,
+            '{' => OpenScope,
+            '}' => CloseScope,
+            '+' => IncVR,
+            '-' => DecVR,
+            '^' => ResVR,
+            '~' => OppVR,
+            '@' => Deref,
+            '\'' =>CharFn,
+            '"' => StrFn,
+            '>' => ShiftR,
+            '<' => ShiftL,
+            '.' => PrintVRChar,
+            ',' => AskInt,
+            '!' => ThrowCode,
+            '#' => PrintVRInt,
+            ':' => PrintNStr,
+            ';' => PrintLastInpOrAsk,
+            '?' => AskStr,
+            'r' => Rand,
+            's' => SumAll,
+            'm' => MulVxR,
 
-			_ => Comment
-		})
-	}
-	return TokenTree;
-}
-
-fn compile(TokenTree: Vec<Tokens>) {
-	for token in TokenTree {
-		// Token subject is maintained until some of the following operators is used:
-		// 
-	}
+            _ => Comment,
+        })
+    }
+    return TokenTree;
 }
