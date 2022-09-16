@@ -1,26 +1,29 @@
+#[macro_export]
 macro_rules! BoilerplateStart {
-	() => {
-		"fn main() {
-			let mut pointer: u8 = 0;
-			let mut array: [u8; 256] = [0; 256];
+    () => {
+        "fn main() {
+			let mut ref: u8 = 0;
+			let mut cell: [u8; 256] = [0; 256];
 		}"
-	};
+    };
 }
 
+#[macro_export]
 macro_rules! BoilerplateEnd {
-	() => {
-		"}"
-	};
+    () => {
+        "}"
+    };
 }
-
+#[macro_export]
 macro_rules! IncV {
-	($pointer: expr) => {
-		format!("{} += 1", $pointer);
-	};
+    () => {
+        "cell[ref] += 1"
+    };
 }
 
+#[macro_export]
 macro_rules! IncR {
-	($pointer: expr) => {
-		format!("pointer += 1", $pointer)
-	};
+    () => {
+        "ref += 1"
+    };
 }

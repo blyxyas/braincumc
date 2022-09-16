@@ -1,7 +1,7 @@
-use super::Token;
-use rand::{distributions::Alphanumeric, Rng};
+use crate::{buffer::BufferTrait, BoilerplateEnd, BoilerplateStart, IncR, IncV};
 
-use super::definitions;
+use super::{ResBuf, Token};
+use rand::{distributions::Alphanumeric, Rng};
 
 fn rand_string(seed: u8) -> String {
     return rand::thread_rng()
@@ -11,19 +11,39 @@ fn rand_string(seed: u8) -> String {
         .collect();
 }
 
-pub fn compile<'a>(TokenTree: Vec<Token>) {
-    let mut CurrentSubject: &Token;
-	let mut Scope: u8;
+pub fn compile<'a>(TokenTree: Vec<Token>) -> ResBuf<'a> {
+    let mut CurrentSubject: &Token = &Token::Val;
+    let mut Scope: u8;
+
+    // Start the buffer
+    let mut Buf: ResBuf = ResBuf::new();
+
+    Buf.write(BoilerplateStart!());
+
     for (i, token) in TokenTree.iter().enumerate() {
         match token {
-            Ref => {
-				CurrentSubject = Ref
-				
-			},
-            Val => {
-				CurrentSubject = Val
-				// Write to buffer
-			},
+            Token::Ref => {
+                CurrentSubject = &Token::Ref;
+            }
+            Token::Val => {
+                CurrentSubject = &Token::Val;
+            }
+
+            Token::IncVR => match CurrentSubject {
+                Token::Ref => {
+                    Buf.write(IncR!());
+                }
+                Token::Val => {
+                    Buf.write(IncV!());
+                }
+				_ => {
+					panic!("You cannot increment a {}", CurrentSubject)
+				}
+            },
         }
     }
+
+    Buf.write(BoilerplateEnd!());
+
+    return Buf;
 }

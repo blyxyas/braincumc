@@ -9,6 +9,9 @@ use clap::Parser;
 use std::fs;
 
 mod compiler;
+mod buffer;
+
+#[macro_use]
 mod definitions;
 
 #[derive(Parser, Debug)]
@@ -47,6 +50,8 @@ pub enum Token {
     MulVxR,
     Comment,
 }
+
+type ResBuf<'a> = Vec::<&'a str>;
 
 fn main() {
     let args = Args::parse();
