@@ -5,11 +5,12 @@
 //!
 //! As of this day, the project is very recent, the docs are just out. So I'm going to just improvise their following until the creator updates their project to add more information (some things are a little bit vague.)
 
-use clap::Parser;
 use std::fs;
 
-mod compiler;
+use clap::Parser;
+
 mod buffer;
+mod compiler;
 
 #[macro_use]
 mod definitions;
@@ -21,7 +22,7 @@ struct Args {
     outputfile: String,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum Token {
     Ref,
     Val,
@@ -33,8 +34,8 @@ pub enum Token {
     DecVR,
     ResVR,
     OppVR,
-    Deref,
-    CharFn,
+    ConvertVR,
+    CharFnVR,
     StrFn,
     ShiftR,
     ShiftL,
@@ -51,21 +52,22 @@ pub enum Token {
     Comment,
 }
 
-type ResBuf<'a> = Vec::<&'a str>;
+type ResBuf<'a> = Vec<&'a str>;
+type TokenTree = Vec<Token>;
 
 fn main() {
     let args = Args::parse();
     // Read file
     let data = fs::read_to_string(&args.inputfile)
         .expect(&format!("Couldn't read file {}", &args.inputfile));
-    let parsed: Vec<Token> = parse(data);
+    let parsed: TokenTree = parse(data);
     let compiled = compiler::compile(parsed);
-	let mut array: [u8; 256] = [0; 256];
+    let mut array: [u8; 256] = [0; 256];
 }
 
-fn parse<'a>(data: String) -> Vec<Token> {
+fn parse<'a>(data: String) -> TokenTree {
     use Token::*;
-    let mut TokenTree: Vec<Token> = Vec::new();
+    let mut TokenTree: TokenTree = Vec::new();
     for ch in data.chars() {
         // Check if char is valid, else, it's a comment.
         TokenTree.push(match ch {
@@ -79,8 +81,8 @@ fn parse<'a>(data: String) -> Vec<Token> {
             '-' => DecVR,
             '^' => ResVR,
             '~' => OppVR,
-            '@' => Deref,
-            '\'' =>CharFn,
+            '@' => ConvertVR,
+            '\'' => CharFnVR,
             '"' => StrFn,
             '>' => ShiftR,
             '<' => ShiftL,

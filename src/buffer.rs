@@ -1,11 +1,12 @@
 use crate::ResBuf;
 
-pub trait BufferTrait {
-	fn write(&self, what: &str);
+pub trait BufferTrait<'a> {
+	fn write(&mut self, what: &'a str);
 }
 
-impl<'a> BufferTrait for ResBuf<'a> {
-	fn write(&self, what: &str) {
+impl<'a> BufferTrait<'a> for ResBuf<'a> {
+	#[inline]
+	fn write(&mut self, what: &'a str) {
 		self.push(what);
 	}
 }
