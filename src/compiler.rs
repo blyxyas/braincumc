@@ -21,7 +21,7 @@ use crate::{
 	ConvertV, 
 	ConvertR, 
 	CharFnV,
-	CharFnR
+	CharFnR, MulRxVR, MulVxRV
 };
 
 // fn rand_string() -> String {
@@ -93,6 +93,11 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
 			Token::CharFnVR => match CurrentSubject {
 				Subject::Ref => Buf.write(CharFnR!()),
 				Subject::Val => Buf.write(CharFnV!())
+			}
+
+			Token::MulVxR => match CurrentSubject {
+				Subject::Ref => Buf.write(MulRxVR!()),
+				Subject::Val => Buf.write(MulVxRV!())
 			}
 
             Token::StartLoop => Buf.write(StartLoop!()),

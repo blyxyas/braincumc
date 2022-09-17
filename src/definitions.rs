@@ -122,3 +122,19 @@ macro_rules! CharFnV {
 		};"
     };
 }
+
+#[macro_export]
+macro_rules! MulRxVR {
+	() => {
+		"ref = (ref * cell[ref]) % 255;"	
+	};
+}
+
+#[macro_export]
+macro_rules! MulVxRV {
+	() => {
+		"cell[ref] = (ref * cell[ref]) % 255;"
+	};
+}
+
+
