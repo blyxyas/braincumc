@@ -62,7 +62,7 @@ fn main() {
         .expect(&format!("Couldn't read file {}", &args.inputfile));
     let parsed: TokenTree = parse(data);
     let compiled = compiler::compile(parsed);
-    let mut array: [u8; 256] = [0; 256];
+	println!("{}", compiled.join("\n"));
 }
 
 fn parse<'a>(data: String) -> TokenTree {
@@ -96,7 +96,7 @@ fn parse<'a>(data: String) -> TokenTree {
             'r' => Rand,
             's' => SumAll,
             'm' => MulVxR,
-            _ => Comment,
+            _ => panic!("")
         })
     }
     return TokenTree;

@@ -1,9 +1,12 @@
 #[macro_export]
 macro_rules! BoilerplateStart {
     () => {
-        "fn main() {
+        "use std::io::stdin;
+
+		fn main() {
 			let mut ref: u8 = 0;
 			let mut cell: [u8; 256] = [0; 256];
+			let mut input_string: String = String::new();
 		}"
     };
 }
@@ -45,7 +48,7 @@ macro_rules! DecR {
 #[macro_export]
 macro_rules! StartLoop {
     () => {
-        "while (i < cell[ref]) {"
+        "while (cell[ref] > 0) {"
     };
 }
 
@@ -118,7 +121,7 @@ macro_rules! CharFnV {
         "if cell[ref] < 32 {
 			cell[ref] += 32;
 		} else if cell[ref] >= 256 {
-			cell[rerf] = cell[ref] % 255
+			cell[ref] = cell[ref] % 255
 		};"
     };
 }
@@ -137,4 +140,45 @@ macro_rules! MulVxRV {
 	};
 }
 
+// use rand::{distributions::Alphanumeric, Rng};
 
+// pub fn rand_string() -> String {
+//     return rand::thread_rng()
+//         .sample_iter(&Alphanumeric)
+//         .take(7)
+//         .map(char::from)
+//         .collect();
+// }
+
+#[macro_export]
+macro_rules! AskIntR {
+	() => {
+		"stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
+		
+		ref = input_string.parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 255\");"
+	};
+}
+
+#[macro_export]
+macro_rules! AskIntV {
+	() => {
+		// rand_string = rand_string();
+		"stdin().read_line(&mut input_string).ok().expect(\"Failed to read line\");
+		
+		cell[ref] = input_string.parse::<usize>().expect(\"Couldn't parse your input to a number between 0 and 256\");"
+	};
+}
+
+#[macro_export]
+macro_rules! ShiftL {
+	() => {
+		""
+	};
+}
+
+#[macro_export]
+macro_rules! ShiftR {
+	() => {
+		""
+	};
+}
