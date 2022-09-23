@@ -2,10 +2,11 @@
 macro_rules! BoilerplateStart {
     () => {
         "use std::io::stdin;
+		use std::collections::VecDeque
 
 		fn main() {
 			let mut ref: u8 = 0;
-			let mut cell: [u8; 256] = [0; 256];
+			let mut cell: VecDeque<u8> = VecDeque::new();
 			let mut input_string: String = String::new();
 		}"
     };
@@ -179,6 +180,7 @@ macro_rules! ShiftL {
 #[macro_export]
 macro_rules! ShiftR {
 	() => {
-		""
+		"cell[..].rotate_right(1);
+		cell[]"
 	};
 }
