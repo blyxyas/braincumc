@@ -6,7 +6,7 @@ macro_rules! BoilerplateStart {
 
 		fn main() {
 			let mut ref: u8 = 0;
-			let mut cell: VecDeque<u8> = VecDeque::new();
+			let mut cell: [u8; 30000] = [0; 30000]
 			let mut input_string: String = String::new();
 		}"
     };
@@ -87,7 +87,7 @@ macro_rules! OppR {
 #[macro_export]
 macro_rules! OppV {
     () => {
-        "cell[ref] = 255 - cell[ref];"
+        "cell[ref] = 255 -  cell[ref];"
     };
 }
 
@@ -130,7 +130,7 @@ macro_rules! CharFnV {
 #[macro_export]
 macro_rules! MulRxVR {
 	() => {
-		"ref = (ref * cell[ref]) % 255;"	
+		"ref = (ref * cell[ref]); % 255;"
 	};
 }
 
@@ -173,7 +173,7 @@ macro_rules! AskIntV {
 #[macro_export]
 macro_rules! ShiftL {
 	() => {
-		""
+		"cell[..]cell[]"
 	};
 }
 
@@ -182,5 +182,47 @@ macro_rules! ShiftR {
 	() => {
 		"cell[..].rotate_right(1);
 		cell[]"
+	};
+}
+
+#[macro_export]
+macro_rules! OpenScope {
+	() => {
+		""
+	};
+}
+
+#[macro_export]
+macro_rules! CloseScope {
+	() => {
+		""
+	};
+}
+
+#[macro_export]
+macro_rules! ThrowCodeV {
+	() => {
+		"std::process::exit(cell[ref]);"
+	};
+}
+
+#[macro_export]
+macro_rules! ThrowCodeR {
+	() => {
+		"std::process::exit(ref);"
+	};
+}
+
+#[macro_export]
+macro_rules! PrintVChar {
+	() => {
+		"println!(\"{}\", cell[ref] as char);"
+	};
+}
+
+#[macro_export]
+macro_rules! PrintRChar {
+	() => {
+		"println!(\"{}\", ref as char);"
 	};
 }

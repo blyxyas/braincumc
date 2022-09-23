@@ -23,7 +23,9 @@ use crate::{
 	AskIntV,
 	AskIntR,
 	ShiftL,
-	ShiftR
+	ShiftR,
+	OpenScope,
+	CloseScope, ThrowCodeR, ThrowCodeV, PrintVChar, PrintRChar,
 };
 
 // Actually not needed debug.
@@ -89,8 +91,26 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
 
             Token::StartLoop => Buf.write(StartLoop!()),
             Token::EndLoop => Buf.write(EndLoop!()),
-
-            _ => unimplemented!(),
+			
+			Token::OpenScope => Buf.write(OpenScope!()),
+			Token::CloseScope => Buf.write(CloseScope!()),
+			
+			Token::StrFn => unimplemented!(),
+			Token::PrintVRChar => match CurrentSubject {
+				Subject::Ref => Buf.write(PrintRChar!()),
+				Subject::Val => Buf.write(PrintVChar!())
+			}
+			Token::PrintVRInt => unimplemented!(),
+			Token::ThrowCodeVR => match CurrentSubject {
+				Subject::Ref => Buf.write(ThrowCodeR!()),
+				Subject::Val => Buf.write(ThrowCodeV!())
+			}
+			Token::PrintNStr => unimplemented!(),
+			Token::PrintLastInpOrAsk => unimplemented!(),
+			Token::AskStr => unimplemented!(),
+			Token::Rand => unimplemented!(),
+			Token::SumAll => unimplemented!(),
+			Token::Comment => unimplemented!(),
         }
     }
 

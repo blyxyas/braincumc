@@ -5,6 +5,8 @@
 //!
 //! As of this day, the project is very recent, the docs are just out. So I'm going to just improvise their following until the creator updates their project to add more information (some things are a little bit vague.)
 
+#![allow(non_snake_case)]
+
 use std::fs;
 
 use clap::Parser;
@@ -19,14 +21,16 @@ struct Args {
     inputfile: String,
     #[clap(short)]
     outputfile: String,
+    #[clap(short)]
+    cargo: bool,
 }
 
 #[derive(PartialEq, Debug)]
 pub enum Token {
-    Ref,
-    Val,
-    StartLoop,
-    EndLoop,
+    Ref, // -
+    Val, // -
+    StartLoop, // -
+    EndLoop, // -
     OpenScope,
     CloseScope,
     IncVR,
@@ -40,7 +44,7 @@ pub enum Token {
     ShiftL,
     PrintVRChar,
     AskInt,
-    ThrowCode,
+    ThrowCodeVR,
     PrintVRInt,
     PrintNStr,
     PrintLastInpOrAsk,
@@ -87,7 +91,7 @@ fn parse<'a>(data: String) -> TokenTree {
             '<' => ShiftL,
             '.' => PrintVRChar,
             ',' => AskInt,
-            '!' => ThrowCode,
+            '!' => ThrowCodeVR,
             '#' => PrintVRInt,
             ':' => PrintNStr,
             ';' => PrintLastInpOrAsk,
