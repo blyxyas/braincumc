@@ -43,7 +43,7 @@ pub enum Token {
     OppVR,
     ConvertVR,
     CharFnVR,
-    StrFn,
+    StrFnVR,
     ShiftR,
     ShiftL,
     PrintVRChar,
@@ -56,7 +56,6 @@ pub enum Token {
     RandVR,
     SumAllVR,
     MulVxR,
-    Comment,
 }
 
 type ResBuf<'a> = Vec<&'a str>;
@@ -107,7 +106,7 @@ fn parse<'a>(data: String) -> TokenTree {
             '~' => OppVR,
             '@' => ConvertVR,
             '\'' => CharFnVR,
-            '"' => StrFn,
+            '"' => StrFnVR,
             '>' => ShiftR,
             '<' => ShiftL,
             '.' => PrintVRChar,

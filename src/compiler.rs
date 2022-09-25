@@ -31,7 +31,12 @@ use crate::{
 	PrintVChar,
 	PrintRChar,
 	SumAllR,
-	SumAllV, RandV, RandR,
+	SumAllV,
+	RandV,
+	RandR, PrintLastInpOrAsk, PrintNStr, AskStr, PrintVInt, PrintRInt,
+	/*StrFnV,
+	*StrFnR,*/
+
 };
 
 // Actually not needed debug.
@@ -52,17 +57,24 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
 
     for /*(i, */token/*)*/ in TokenTree/*.iter().enumerate() */ {
         match token {
+
+			// ─── Subject Required ───────────────────────────
+
             Token::Ref => CurrentSubject = Subject::Ref,
-            Token::Val => CurrentSubject = Subject::Val,
-            Token::IncVR => match CurrentSubject {
+            
+			Token::Val => CurrentSubject = Subject::Val,
+            
+			Token::IncVR => match CurrentSubject {
                 Subject::Ref => Buf.write(IncR!()),
                 Subject::Val => Buf.write(IncV!()),
             },
-            Token::DecVR => match CurrentSubject {
+            
+			Token::DecVR => match CurrentSubject {
                 Subject::Ref => Buf.write(DecR!()),
                 Subject::Val => Buf.write(DecV!()),
             },
-            Token::ResVR => match CurrentSubject {
+            
+			Token::ResVR => match CurrentSubject {
                 Subject::Ref => Buf.write(ResR!()),
                 Subject::Val => Buf.write(ResV!()),
             },
@@ -92,37 +104,59 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
 				Subject::Val => Buf.write(MulVxRV!())
 			}
 
-			Token::ShiftL => Buf.write(ShiftL!()),
-			Token::ShiftR => Buf.write(ShiftR!()),
-
-            Token::StartLoop => Buf.write(StartLoop!()),
-            Token::EndLoop => Buf.write(EndLoop!()),
 			
-			Token::OpenScope => Buf.write(OpenScope!()),
-			Token::CloseScope => Buf.write(CloseScope!()),
-			
-			Token::StrFn => unimplemented!(),
 			Token::PrintVRChar => match CurrentSubject {
 				Subject::Ref => Buf.write(PrintRChar!()),
 				Subject::Val => Buf.write(PrintVChar!())
 			}
-			Token::PrintVRInt => unimplemented!(),
+			
+			Token::PrintVRInt => match CurrentSubject {
+				Subject::Ref => Buf.write(PrintRInt!()),
+				Subject::Val => Buf.write(PrintVInt!())
+			},
+			
 			Token::ThrowCodeVR => match CurrentSubject {
 				Subject::Ref => Buf.write(ThrowCodeR!()),
 				Subject::Val => Buf.write(ThrowCodeV!())
 			}
-			Token::PrintNStr => unimplemented!(),
-			Token::PrintLastInpOrAsk => unimplemented!(),
-			Token::AskStr => unimplemented!(),
+
 			Token::RandVR => match CurrentSubject {
 				Subject::Ref => Buf.write(RandR!()),
 				Subject::Val => Buf.write(RandV!())
 			}
+			
 			Token::SumAllVR => match CurrentSubject {
 				Subject::Ref => Buf.write(SumAllR!()),
 				Subject::Val => Buf.write(SumAllV!())
 			}
-			Token::Comment => continue,
+			
+			Token::StrFnVR => todo!(),
+			
+			// TODO: Waiting on #13
+			// Token::StrFnVR => match CurrentSubject {
+				// Subject::Ref => Buf.write(StrFnR!()),
+				// Subject::Val => Buf.write(StrFnV!()),
+				// }
+				
+				// ─── No Subject Required ────────────────────────
+				
+			Token::ShiftL => Buf.write(ShiftL!()),
+			
+			Token::ShiftR => Buf.write(ShiftR!()),
+
+            Token::StartLoop => Buf.write(StartLoop!()),
+            
+			Token::EndLoop => Buf.write(EndLoop!()),
+			
+			Token::OpenScope => Buf.write(OpenScope!()),
+			
+			Token::CloseScope => Buf.write(CloseScope!()),
+
+			Token::PrintNStr => Buf.write(PrintNStr!()),
+			
+			Token::PrintLastInpOrAsk => Buf.write(PrintLastInpOrAsk!()),
+			
+			Token::AskStr => Buf.write(AskStr!()),
         }
     }
 

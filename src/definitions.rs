@@ -42,7 +42,7 @@ macro_rules! BoilerplateStart {
         "use std::io::stdin;
 		use std::collections::VecDeque
 		use rand::Rng
-
+	
 		fn main() {
 			let mut ref: u8 = 0;
 			let mut cell: [u8; 30000] = [0; 30000]
@@ -168,16 +168,16 @@ macro_rules! CharFnV {
 
 #[macro_export]
 macro_rules! MulRxVR {
-	() => {
-		"ref = (ref * cell[ref]); % 255;"
-	};
+    () => {
+        "ref = (ref * cell[ref]); % 255;"
+    };
 }
 
 #[macro_export]
 macro_rules! MulVxRV {
-	() => {
-		"cell[ref] = (ref * cell[ref]) % 255;"
-	};
+    () => {
+        "cell[ref] = (ref * cell[ref]) % 255;"
+    };
 }
 
 // use rand::{distributions::Alphanumeric, Rng};
@@ -211,94 +211,94 @@ macro_rules! AskIntV {
 
 #[macro_export]
 macro_rules! ShiftL {
-	() => {
-		"cell[..]cell[]"
-	};
+    () => {
+        "cell[..]cell[]"
+    };
 }
 
 #[macro_export]
 macro_rules! ShiftR {
-	() => {
-		"cell[..].rotate_right(1);
+    () => {
+        "cell[..].rotate_right(1);
 		cell[]"
-	};
+    };
 }
 
 #[macro_export]
 macro_rules! OpenScope {
-	() => {
-		""
-	};
+    () => {
+        ""
+    };
 }
 
 #[macro_export]
 macro_rules! CloseScope {
-	() => {
-		""
-	};
+    () => {
+        ""
+    };
 }
 
 #[macro_export]
 macro_rules! ThrowCodeV {
-	() => {
-		"std::process::exit(cell[ref]);"
-	};
+    () => {
+        "std::process::exit(cell[ref]);"
+    };
 }
 
 #[macro_export]
 macro_rules! ThrowCodeR {
-	() => {
-		"std::process::exit(ref);"
-	};
+    () => {
+        "std::process::exit(ref);"
+    };
 }
 
 #[macro_export]
 macro_rules! PrintVChar {
-	() => {
-		"println!(\"{}\", cell[ref] as char);"
-	};
+    () => {
+        "println!(\"{}\", cell[ref] as char);"
+    };
 }
 
 #[macro_export]
 macro_rules! PrintRChar {
-	() => {
-		"println!(\"{}\", ref as char);"
-	};
+    () => {
+        "println!(\"{}\", ref as char);"
+    };
 }
 
 #[macro_export]
 macro_rules! SumAllV {
-	() => {
-		"for i in 0..ref {
+    () => {
+        "for i in 0..ref {
 			cell[ref] += cell[i];
 		}"
-	};
+    };
 }
 
 #[macro_export]
 macro_rules! SumAllR {
-	() => {
-		"
+    () => {
+        "
 		let mut sum = 0;
 		for i in 0..ref {
 			sum += cell[i];
 		}
 		ref = sum;"
-	};
+    };
 }
 
 #[macro_export]
 macro_rules! RandR {
-	() => {
-		"ref = rand::thread_rng().gen_range(0..256)"
-	};
+    () => {
+        "ref = rand::thread_rng().gen_range(0..256)"
+    };
 }
 
 #[macro_export]
 macro_rules! RandV {
-	() => {
-		"cell[ref] = rand::thread_rng().gen_range(0..256)"
-	};
+    () => {
+        "cell[ref] = rand::thread_rng().gen_range(0..256)"
+    };
 }
 
 #[macro_export]
@@ -314,7 +314,50 @@ macro_rules! AskStr {
 
 #[macro_export]
 macro_rules! PrintLastInpOrAsk {
-	() => {
-		
+    () => {
+		"if input_string.is_empty() {
+			// Take input
+			stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
+		}
+		println!(\"{}\", input_string())"
 	};
 }
+
+#[macro_export]
+macro_rules! PrintNStr {
+	() => {
+		"for i in ref..cell[ref] {
+			print!(\"{}\", cell[i] as char);
+		}"
+	};
+}
+
+#[macro_export]
+macro_rules! PrintVInt {
+	() => {
+		"println!(\"{}\", cell[ref]);"
+	};
+}
+
+#[macro_export]
+macro_rules! PrintRInt {
+	() => {
+		"println!(\"{}\", ref);"
+	};
+}
+
+// TODO: Waiting for response on #13
+
+// #[macro_export]
+// macro_rules! StrFnR {
+//     () => {
+//         "cell[ref]"
+//     };
+// }
+
+// #[macro_export]
+// macro_rules! StrFnV {
+//     () => {
+//         ""
+//     };
+// }
