@@ -10,8 +10,11 @@
 use std::fs;
 
 use clap::Parser;
+
+use crate::conversion::create_and_convert;
 mod buffer;
 mod compiler;
+mod conversion;
 
 #[macro_use]
 mod definitions;
@@ -21,9 +24,6 @@ struct Args {
     inputfile: String,
     #[clap(short)]
     outputfile: String,
-    #[clap(short, default_value = "true")]
-    /// Compiles with Cargo instead of Rustc.
-    cargo: bool,
     #[clap(short, default_value = "true")]
     /// Sacrifices runtime for smaller binaries. Cargo required.
     smallerbin: bool,
@@ -61,14 +61,16 @@ pub enum Token {
 type ResBuf<'a> = Vec<&'a str>;
 type TokenTree = Vec<Token>;
 
-fn main() {
+fn main() -> std::io::Result<()>{
     let args = Args::parse();
     // Read file
     let data = fs::read_to_string(&args.inputfile)
         .expect(&format!("Couldn't read file {}", &args.inputfile));
     let parsed: TokenTree = parse(data);
     let compiled: ResBuf = compiler::compile(parsed);
-    println!("{}", compiled.join("\n"));
+	create_and_convert(compiled, &args.outputfile)?;
+	
+	Ok(())
 }
 
 fn parse<'a>(data: String) -> TokenTree {

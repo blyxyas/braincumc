@@ -1,3 +1,5 @@
+//! Defines all necessary macros
+
 #[macro_export]
 macro_rules! CargoBoilerplateSmall {
 	() => {

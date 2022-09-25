@@ -1,3 +1,5 @@
+//! Defines the Buffer trait.
+
 use crate::ResBuf;
 
 pub trait BufferTrait<'a> {

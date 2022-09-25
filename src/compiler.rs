@@ -1,3 +1,5 @@
+//! Defines all functions necessary for converting all the tokens in a token tree to a ResBuf
+
 #![allow(non_snake_case)]
 
 use super::{buffer::BufferTrait, ResBuf, Token, TokenTree};
