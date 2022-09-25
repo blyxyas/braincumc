@@ -1,1 +1,4 @@
 /target
+/debugging/
+test/out
+test/src.bc

@@ -7,8 +7,10 @@ use std::process::{
 use tempfile::tempdir;
 
 use super::ResBuf;
+use super::CargoBoilerplate;
+use super::CargoBoilerplateSmall;
 
-pub fn create_and_convert(resbuf: ResBuf, output_file: &str) -> std::io::Result<()> {
+pub fn create_and_convert(resbuf: ResBuf, output_file: &str, smallerbin: bool) -> std::io::Result<()> {
     let dir = tempdir()?;
     let dir_path = dir.path();
 
@@ -32,12 +34,18 @@ pub fn create_and_convert(resbuf: ResBuf, output_file: &str) -> std::io::Result<
     //     .unwrap()
     //     .to_string();
 
-    // Create cargo project;
+	// Write to Cargo.toml
+
+	if smallerbin {
+		std::fs::write(dir_path.join("Cargo.toml"), CargoBoilerplateSmall!().as_bytes()).expect("Couldn't write to Cargo.toml");
+	} else {
+		std::fs::write(dir_path.join("Cargo.toml"), CargoBoilerplate!().as_bytes()).expect("Couldn't write to Cargo.toml");
+	}
 
     // Compile new Rust tempfile
 
     Command::new("cargo")
-        .args(["build --release"])
+        .args(["build"])
         .current_dir(dir_path)
         .status()
         .expect("Couldn't build project");
@@ -46,9 +54,9 @@ pub fn create_and_convert(resbuf: ResBuf, output_file: &str) -> std::io::Result<
         .args([
             format!(
                 "{}",
-                dir_path.join("target/release/builder").to_string_lossy()
+                dir_path.join("target/debug/braincumc").to_string_lossy()
             ),
-            format!("{}", output_file),
+            output_file.to_string(),
         ])
         .status()
         .expect("Couldn't move built file");

@@ -68,7 +68,7 @@ fn main() -> std::io::Result<()>{
         .expect(&format!("Couldn't read file {}", &args.inputfile));
     let parsed: TokenTree = parse(data);
     let compiled: ResBuf = compiler::compile(parsed);
-	create_and_convert(compiled, &args.outputfile)?;
+	create_and_convert(compiled, &args.outputfile, args.smallerbin)?;
 	
 	Ok(())
 }
@@ -92,9 +92,11 @@ fn parse<'a>(data: String) -> TokenTree {
 		}
 
 		else if ch == '\\' {
-
+			inComment = true;
+			continue
 		}
 
+		dbg!("{}", ch);
         TokenTree.push(match ch {
             '&' => Ref,
             '$' => Val,

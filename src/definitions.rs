@@ -42,14 +42,14 @@ macro_rules! CargoBoilerplate {
 macro_rules! BoilerplateStart {
     () => {
         "use std::io::stdin;
-		use std::collections::VecDeque
-		use rand::Rng
+		use std::collections::VecDeque;
+		use rand::Rng;
 	
 		fn main() {
-			let mut ref: u8 = 0;
-			let mut cell: [u8; 30000] = [0; 30000]
+			let mut ptr: usize = 0;
+			let mut cell: [u8; 30000] = [0; 30000];
 			let mut input_string: String = String::new();
-		}"
+		"
     };
 }
 
@@ -62,35 +62,35 @@ macro_rules! BoilerplateEnd {
 #[macro_export]
 macro_rules! IncV {
     () => {
-        "cell[ref] += 1;"
+        "cell[ptr] += 1;"
     };
 }
 
 #[macro_export]
 macro_rules! IncR {
     () => {
-        "ref += 1;"
+        "ptr += 1;"
     };
 }
 
 #[macro_export]
 macro_rules! DecV {
     () => {
-        "cell[ref] -= 1;"
+        "cell[ptr] -= 1;"
     };
 }
 
 #[macro_export]
 macro_rules! DecR {
     () => {
-        "ref -= 1;"
+        "ptr -= 1;"
     };
 }
 
 #[macro_export]
 macro_rules! StartLoop {
     () => {
-        "while (cell[ref] > 0) {"
+        "while (cell[ptr] > 0) {"
     };
 }
 
@@ -105,7 +105,7 @@ macro_rules! EndLoop {
 /// Sets an address (sets to 0)
 macro_rules! ResR {
     () => {
-        "ref = 0;"
+        "ptr = 0;"
     };
 }
 
@@ -113,7 +113,7 @@ macro_rules! ResR {
 /// Sets a value to 0
 macro_rules! ResV {
     () => {
-        "cell[ref] = 0;"
+        "cell[ptr] = 0;"
     };
 }
 
@@ -121,38 +121,38 @@ macro_rules! ResV {
 /// Sets an address to the opposite value.
 macro_rules! OppR {
     () => {
-        "ref = 255 - ref;"
+        "ptr = 255 - ptr;"
     };
 }
 
 #[macro_export]
 macro_rules! OppV {
     () => {
-        "cell[ref] = 255 -  cell[ref];"
+        "cell[ptr] = 255 -  cell[ptr];"
     };
 }
 
 #[macro_export]
 macro_rules! ConvertR {
     () => {
-        "ref = cell[ref];"
+        "ptr = cell[ptr];"
     };
 }
 
 #[macro_export]
 macro_rules! ConvertV {
     () => {
-        "cell[ref]= ref;"
+        "cell[ptr]= ptr;"
     };
 }
 
 #[macro_export]
 macro_rules! CharFnR {
     () => {
-        "if ref < 32 {
-			ref += 32;
-		} else if ref >= 256 {
-			ref = ref % 255;
+        "if ptr < 32 {
+			ptr += 32;
+		} else if ptr >= 256 {
+			ptr = ptr % 255;
 		};"
     };
 }
@@ -160,10 +160,10 @@ macro_rules! CharFnR {
 #[macro_export]
 macro_rules! CharFnV {
     () => {
-        "if cell[ref] < 32 {
-			cell[ref] += 32;
-		} else if cell[ref] >= 256 {
-			cell[ref] = cell[ref] % 255
+        "if cell[ptr] < 32 {
+			cell[ptr] += 32;
+		} else if cell[ptr] >= 256 {
+			cell[ptr] = cell[ptr] % 255
 		};"
     };
 }
@@ -171,14 +171,14 @@ macro_rules! CharFnV {
 #[macro_export]
 macro_rules! MulRxVR {
     () => {
-        "ref = (ref * cell[ref]); % 255;"
+        "ptr = (ptr * cell[ptr]); % 255;"
     };
 }
 
 #[macro_export]
 macro_rules! MulVxRV {
     () => {
-        "cell[ref] = (ref * cell[ref]) % 255;"
+        "cell[ptr] = (ptr * cell[ptr]) % 255;"
     };
 }
 
@@ -197,7 +197,7 @@ macro_rules! AskIntR {
 	() => {
 		"stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
 		
-		ref = input_string.parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 255\");"
+		ptr = input_string.parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 255\");"
 	};
 }
 
@@ -207,7 +207,7 @@ macro_rules! AskIntV {
 		// rand_string = rand_string();
 		"stdin().read_line(&mut input_string).ok().expect(\"Failed to read line\");
 		
-		cell[ref] = input_string.parse::<usize>().expect(\"Couldn't parse your input to a number between 0 and 256\");"
+		cell[ptr] = input_string.parse::<usize>().expect(\"Couldn't parse your input to a number between 0 and 256\");"
 	};
 }
 
@@ -243,36 +243,36 @@ macro_rules! CloseScope {
 #[macro_export]
 macro_rules! ThrowCodeV {
     () => {
-        "std::process::exit(cell[ref]);"
+        "std::process::exit(cell[ptr]);"
     };
 }
 
 #[macro_export]
 macro_rules! ThrowCodeR {
     () => {
-        "std::process::exit(ref);"
+        "std::process::exit(ptr);"
     };
 }
 
 #[macro_export]
 macro_rules! PrintVChar {
     () => {
-        "println!(\"{}\", cell[ref] as char);"
+        "println!(\"{}\", cell[ptr] as char);"
     };
 }
 
 #[macro_export]
 macro_rules! PrintRChar {
     () => {
-        "println!(\"{}\", ref as char);"
+        "println!(\"{}\", ptr as char);"
     };
 }
 
 #[macro_export]
 macro_rules! SumAllV {
     () => {
-        "for i in 0..ref {
-			cell[ref] += cell[i];
+        "for i in 0..ptr {
+			cell[ptr] += cell[i];
 		}"
     };
 }
@@ -282,24 +282,24 @@ macro_rules! SumAllR {
     () => {
         "
 		let mut sum = 0;
-		for i in 0..ref {
+		for i in 0..ptr {
 			sum += cell[i];
 		}
-		ref = sum;"
+		ptr = sum;"
     };
 }
 
 #[macro_export]
 macro_rules! RandR {
     () => {
-        "ref = rand::thread_rng().gen_range(0..256)"
+        "ptr = rand::thread_rng().gen_range(0..256)"
     };
 }
 
 #[macro_export]
 macro_rules! RandV {
     () => {
-        "cell[ref] = rand::thread_rng().gen_range(0..256)"
+        "cell[ptr] = rand::thread_rng().gen_range(0..256)"
     };
 }
 
@@ -309,7 +309,7 @@ macro_rules! AskStr {
 		"stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
 		
 		for i in input_string.chars().count() {
-			cell[ref + i] = input_string.chars().nth(i)
+			cell[ptr + i] = input_string.chars().nth(i)
 		}"
 	};
 }
@@ -328,7 +328,7 @@ macro_rules! PrintLastInpOrAsk {
 #[macro_export]
 macro_rules! PrintNStr {
 	() => {
-		"for i in ref..cell[ref] {
+		"for i in ptr..cell[ptr] {
 			print!(\"{}\", cell[i] as char);
 		}"
 	};
@@ -337,14 +337,14 @@ macro_rules! PrintNStr {
 #[macro_export]
 macro_rules! PrintVInt {
 	() => {
-		"println!(\"{}\", cell[ref]);"
+		"println!(\"{}\", cell[ptr]);"
 	};
 }
 
 #[macro_export]
 macro_rules! PrintRInt {
 	() => {
-		"println!(\"{}\", ref);"
+		"println!(\"{}\", ptr);"
 	};
 }
 
@@ -353,7 +353,7 @@ macro_rules! PrintRInt {
 // #[macro_export]
 // macro_rules! StrFnR {
 //     () => {
-//         "cell[ref]"
+//         "cell[ptr]"
 //     };
 // }
 
