@@ -21,16 +21,20 @@ struct Args {
     inputfile: String,
     #[clap(short)]
     outputfile: String,
-    #[clap(short)]
+    #[clap(short, default_value = "true")]
+    /// Compiles with Cargo instead of Rustc.
     cargo: bool,
+    #[clap(short, default_value = "true")]
+    /// Sacrifices runtime for smaller binaries. Cargo required.
+    smallerbin: bool,
 }
 
 #[derive(PartialEq, Debug)]
 pub enum Token {
-    Ref, // -
-    Val, // -
-    StartLoop, // -
-    EndLoop, // -
+    Ref,
+    Val,
+    StartLoop,
+    EndLoop,
     OpenScope,
     CloseScope,
     IncVR,
@@ -49,8 +53,8 @@ pub enum Token {
     PrintNStr,
     PrintLastInpOrAsk,
     AskStr,
-    Rand,
-    SumAll,
+    RandVR,
+    SumAllVR,
     MulVxR,
     Comment,
 }
@@ -64,15 +68,32 @@ fn main() {
     let data = fs::read_to_string(&args.inputfile)
         .expect(&format!("Couldn't read file {}", &args.inputfile));
     let parsed: TokenTree = parse(data);
-    let compiled = compiler::compile(parsed);
+    let compiled: ResBuf = compiler::compile(parsed);
     println!("{}", compiled.join("\n"));
 }
 
 fn parse<'a>(data: String) -> TokenTree {
     use Token::*;
+	let mut inComment: bool = false;
     let mut TokenTree: TokenTree = Vec::new();
-    for ch in data.chars() {
-        // Check if char is valid, else, it's a comment.
+    for (i, ch) in data.chars().enumerate() {
+        if ch == '\n' {
+			inComment = false;
+			continue;
+		}
+
+		else if inComment {
+			continue;
+		}
+
+		else if ch == ' ' {
+			continue
+		}
+
+		else if ch == '\\' {
+
+		}
+
         TokenTree.push(match ch {
             '&' => Ref,
             '$' => Val,
@@ -96,10 +117,10 @@ fn parse<'a>(data: String) -> TokenTree {
             ':' => PrintNStr,
             ';' => PrintLastInpOrAsk,
             '?' => AskStr,
-            'r' => Rand,
-            's' => SumAll,
+            'r' => RandVR,
+            's' => SumAllVR,
             'm' => MulVxR,
-            _ => panic!(""),
+			_ => panic!("Unknown character: {} @ character no. {}", ch, i),
         })
     }
     return TokenTree;

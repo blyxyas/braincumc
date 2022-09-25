@@ -25,7 +25,13 @@ use crate::{
 	ShiftL,
 	ShiftR,
 	OpenScope,
-	CloseScope, ThrowCodeR, ThrowCodeV, PrintVChar, PrintRChar,
+	CloseScope,
+	ThrowCodeR,
+	ThrowCodeV,
+	PrintVChar,
+	PrintRChar,
+	SumAllR,
+	SumAllV, RandV, RandR,
 };
 
 // Actually not needed debug.
@@ -108,9 +114,15 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
 			Token::PrintNStr => unimplemented!(),
 			Token::PrintLastInpOrAsk => unimplemented!(),
 			Token::AskStr => unimplemented!(),
-			Token::Rand => unimplemented!(),
-			Token::SumAll => unimplemented!(),
-			Token::Comment => unimplemented!(),
+			Token::RandVR => match CurrentSubject {
+				Subject::Ref => Buf.write(RandR!()),
+				Subject::Val => Buf.write(RandV!())
+			}
+			Token::SumAllVR => match CurrentSubject {
+				Subject::Ref => Buf.write(SumAllR!()),
+				Subject::Val => Buf.write(SumAllV!())
+			}
+			Token::Comment => continue,
         }
     }
 

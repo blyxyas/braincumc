@@ -1,8 +1,47 @@
 #[macro_export]
+macro_rules! CargoBoilerplateSmall {
+	() => {
+		"
+		[package]
+		name = \"braincumc\"
+		version = \"0.1.0\"
+		edition = \"2021\"
+		
+		[profile.release]
+		opt-lever = \"z\"
+		strip = true
+		lto = true
+		codegen-units = 1
+		
+		[dependencies]
+		rand = \"0.8.5\"
+		"
+	};
+}
+
+#[macro_export]
+macro_rules! CargoBoilerplate {
+	() => {
+		"
+		[package]
+		name = \"braincumc\"
+		version = \"0.1.0\"
+		edition = \"2021\"
+
+		[profile.release]
+		lto = \"fat\"
+		codegen-units = 1
+		
+		"
+	};
+}
+
+#[macro_export]
 macro_rules! BoilerplateStart {
     () => {
         "use std::io::stdin;
 		use std::collections::VecDeque
+		use rand::Rng
 
 		fn main() {
 			let mut ref: u8 = 0;
@@ -224,5 +263,58 @@ macro_rules! PrintVChar {
 macro_rules! PrintRChar {
 	() => {
 		"println!(\"{}\", ref as char);"
+	};
+}
+
+#[macro_export]
+macro_rules! SumAllV {
+	() => {
+		"for i in 0..ref {
+			cell[ref] += cell[i];
+		}"
+	};
+}
+
+#[macro_export]
+macro_rules! SumAllR {
+	() => {
+		"
+		let mut sum = 0;
+		for i in 0..ref {
+			sum += cell[i];
+		}
+		ref = sum;"
+	};
+}
+
+#[macro_export]
+macro_rules! RandR {
+	() => {
+		"ref = rand::thread_rng().gen_range(0..256)"
+	};
+}
+
+#[macro_export]
+macro_rules! RandV {
+	() => {
+		"cell[ref] = rand::thread_rng().gen_range(0..256)"
+	};
+}
+
+#[macro_export]
+macro_rules! AskStr {
+	() => {
+		"stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
+		
+		for i in input_string.chars().count() {
+			cell[ref + i] = input_string.chars().nth(i)
+		}"
+	};
+}
+
+#[macro_export]
+macro_rules! PrintLastInpOrAsk {
+	() => {
+		
 	};
 }
