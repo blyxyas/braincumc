@@ -22,34 +22,17 @@ macro_rules! CargoBoilerplateSmall {
 }
 
 #[macro_export]
-macro_rules! CargoBoilerplate {
-	() => {
-		"
-		[package]
-		name = \"braincumc\"
-		version = \"0.1.0\"
-		edition = \"2021\"
-
-		[profile.release]
-		lto = \"fat\"
-		codegen-units = 1
-		
-		"
-	};
-}
-
-#[macro_export]
 macro_rules! BoilerplateStart {
     () => {
         "use std::io::stdin;
-		use std::collections::VecDeque;
-		use rand::Rng;
+use std::collections::VecDeque;
+use rand::Rng;
 	
-		fn main() {
-			let mut ptr: usize = 0;
-			let mut cell: [u8; 30000] = [0; 30000];
-			let mut input_string: String = String::new();
-		"
+fn main() {
+let mut ptr: usize = 0;
+let mut cell: [u8; 30000] = [0; 30000];
+let mut input_string: String = String::new();
+"
     };
 }
 
@@ -292,14 +275,14 @@ macro_rules! SumAllR {
 #[macro_export]
 macro_rules! RandR {
     () => {
-        "ptr = rand::thread_rng().gen_range(0..256)"
+        "ptr = rand::thread_rng().gen_range(0..=255);"
     };
 }
 
 #[macro_export]
 macro_rules! RandV {
     () => {
-        "cell[ptr] = rand::thread_rng().gen_range(0..256)"
+        "cell[ptr] = rand::thread_rng().gen_range(0..=255);"
     };
 }
 

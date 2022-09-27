@@ -63,9 +63,7 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
 			// ─── Subject Required ───────────────────────────
 
             Token::Ref => CurrentSubject = Subject::Ref,
-            
 			Token::Val => CurrentSubject = Subject::Val,
-            
 			Token::IncVR => match CurrentSubject {
                 Subject::Ref => Buf.write(IncR!()),
                 Subject::Val => Buf.write(IncV!()),
@@ -163,6 +161,6 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
     }
 
     Buf.write(BoilerplateEnd!());
-
+	dbg!("{:#?}", &Buf);
     return Buf;
 }

@@ -1,4 +1,10 @@
 #!/bin/bash
 
-cargo build --release
-../target/release/braincumc src.bc -o out
+if [ -f "src.bc" ]; then
+    echo "src.bc exists, building"
+    cargo run --release -- src.bc -o out
+else
+    echo "src.bc doesn't exist, creating."
+    touch "src.bc"
+    echo "Now, try writing some Braincum code to 'src.bc' and running this script again!"
+fi

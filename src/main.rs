@@ -24,9 +24,6 @@ struct Args {
     inputfile: String,
     #[clap(short)]
     outputfile: String,
-    #[clap(short, default_value = "true")]
-    /// Sacrifices runtime for smaller binaries. Cargo required.
-    smallerbin: bool,
 }
 
 #[derive(PartialEq, Debug)]
@@ -68,7 +65,7 @@ fn main() -> std::io::Result<()>{
         .expect(&format!("Couldn't read file {}", &args.inputfile));
     let parsed: TokenTree = parse(data);
     let compiled: ResBuf = compiler::compile(parsed);
-	create_and_convert(compiled, &args.outputfile, args.smallerbin)?;
+	create_and_convert(compiled, &args.outputfile)?;
 	
 	Ok(())
 }

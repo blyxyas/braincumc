@@ -2,3 +2,4 @@
 /debugging/
 test/out
 test/src.bc
+target_bc
