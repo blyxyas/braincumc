@@ -39,7 +39,7 @@ pub fn create_and_convert(resbuf: ResBuf, output_file: &str) -> std::io::Result<
 	// build and move
 
     Command::new("cargo")
-        .args(["build", "-q"])
+        .args(["build", "--quiet"])
         .current_dir("target_bc")
         .status()
         .expect("Couldn't build project");

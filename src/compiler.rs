@@ -26,8 +26,6 @@ use crate::{
 	AskIntR,
 	ShiftL,
 	ShiftR,
-	OpenScope,
-	CloseScope,
 	ThrowCodeR,
 	ThrowCodeV,
 	PrintVChar,

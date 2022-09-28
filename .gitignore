@@ -1,5 +1,5 @@
 /target
 /debugging/
-test/out
+tests/out
 test/src.bc
 target_bc
