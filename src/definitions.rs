@@ -30,7 +30,6 @@ use rand::Rng;
 	
 fn main() {
 let mut ptr: usize = 0;
-let mut scope: usize = 0;
 let mut cell: [u8; 3000] = [0; 3000];
 let mut input_string: String = String::new();
 "
@@ -208,20 +207,6 @@ macro_rules! ShiftR {
     () => {
         "cell[..].rotate_right(1);
 		cell[0] = 0;"
-    };
-}
-
-#[macro_export]
-macro_rules! OpenScope {
-    () => {
-        "scope += 1 * (scope == 0);"
-    };
-}
-
-#[macro_export]
-macro_rules! CloseScope {
-    () => {
-        "scope -= 1 * (scope == 1);"
     };
 }
 

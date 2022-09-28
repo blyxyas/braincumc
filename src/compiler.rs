@@ -147,10 +147,6 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
             Token::StartLoop => Buf.write(StartLoop!()),
             
 			Token::EndLoop => Buf.write(EndLoop!()),
-			
-			Token::OpenScope => Buf.write(OpenScope!()),
-			
-			Token::CloseScope => Buf.write(CloseScope!()),
 
 			Token::PrintNStr => Buf.write(PrintNStr!()),
 			
