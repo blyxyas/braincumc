@@ -30,7 +30,8 @@ use rand::Rng;
 	
 fn main() {
 let mut ptr: usize = 0;
-let mut cell: [u8; 30000] = [0; 30000];
+let mut scope: usize = 0;
+let mut cell: [u8; 3000] = [0; 3000];
 let mut input_string: String = String::new();
 "
     };
@@ -197,7 +198,8 @@ macro_rules! AskIntV {
 #[macro_export]
 macro_rules! ShiftL {
     () => {
-        "cell[..]cell[]"
+        "cell[..].rotate_left(1);
+		cell[-1] = 0;"
     };
 }
 
@@ -205,21 +207,21 @@ macro_rules! ShiftL {
 macro_rules! ShiftR {
     () => {
         "cell[..].rotate_right(1);
-		cell[]"
+		cell[0] = 0;"
     };
 }
 
 #[macro_export]
 macro_rules! OpenScope {
     () => {
-        ""
+        "scope += 1 * (scope == 0);"
     };
 }
 
 #[macro_export]
 macro_rules! CloseScope {
     () => {
-        ""
+        "scope -= 1 * (scope == 1);"
     };
 }
 
@@ -300,35 +302,35 @@ macro_rules! AskStr {
 #[macro_export]
 macro_rules! PrintLastInpOrAsk {
     () => {
-		"if input_string.is_empty() {
+        "if input_string.is_empty() {
 			// Take input
 			stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
 		}
 		println!(\"{}\", input_string())"
-	};
+    };
 }
 
 #[macro_export]
 macro_rules! PrintNStr {
-	() => {
-		"for i in ptr..cell[ptr] {
+    () => {
+        "for i in ptr..cell[ptr] {
 			print!(\"{}\", cell[i] as char);
 		}"
-	};
+    };
 }
 
 #[macro_export]
 macro_rules! PrintVInt {
-	() => {
-		"println!(\"{}\", cell[ptr]);"
-	};
+    () => {
+        "println!(\"{}\", cell[ptr]);"
+    };
 }
 
 #[macro_export]
 macro_rules! PrintRInt {
-	() => {
-		"println!(\"{}\", ptr);"
-	};
+    () => {
+        "println!(\"{}\", ptr);"
+    };
 }
 
 // TODO: Waiting for response on #13
