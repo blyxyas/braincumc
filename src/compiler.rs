@@ -34,8 +34,8 @@ use crate::{
 	SumAllV,
 	RandV,
 	RandR, PrintLastInpOrAsk, PrintNStr, AskStr, PrintVInt, PrintRInt,
-	/*StrFnV,
-	*StrFnR,*/
+	StrFnV,
+	StrFnR,
 
 };
 
@@ -127,14 +127,11 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
 				Subject::Ref => Buf.write(SumAllR!()),
 				Subject::Val => Buf.write(SumAllV!())
 			}
-			
-			Token::StrFnVR => todo!(),
-			
-			// TODO: Waiting on #13
-			// Token::StrFnVR => match CurrentSubject {
-				// Subject::Ref => Buf.write(StrFnR!()),
-				// Subject::Val => Buf.write(StrFnV!()),
-				// }
+
+			Token::StrFnVR => match CurrentSubject {
+				Subject::Ref => Buf.write(StrFnR!()),
+				Subject::Val => Buf.write(StrFnV!()),
+				}
 				
 				// ─── No Subject Required ────────────────────────
 				

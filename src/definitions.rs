@@ -24,13 +24,15 @@ macro_rules! CargoBoilerplateSmall {
 #[macro_export]
 macro_rules! BoilerplateStart {
     () => {
-        "use std::io::stdin;
+        "#![allow(warnings)]
+use std::io::stdin;
 use std::collections::VecDeque;
 use rand::Rng;
 	
 fn main() {
 let mut ptr: usize = 0;
-let mut cell: [u8; 3000] = [0; 3000];
+let mut cell: Vec<u8> = Vec::new();
+cell.resize(300, 0);
 let mut input_string: String = String::new();
 "
     };
@@ -52,7 +54,11 @@ macro_rules! IncV {
 #[macro_export]
 macro_rules! IncR {
     () => {
-        "ptr += 1;"
+        "
+		if ptr == cap {
+			
+		}
+		ptr += 1;"
     };
 }
 
@@ -320,16 +326,23 @@ macro_rules! PrintRInt {
 
 // TODO: Waiting for response on #13
 
-// #[macro_export]
-// macro_rules! StrFnR {
-//     () => {
-//         "cell[ptr]"
-//     };
-// }
+#[macro_export]
+macro_rules! StrFnV {
+    () => {
+        "
+		if cell[ptr] >= 10 {
+			panic!(\"You cannot use `\\\"` with an address greater than 10\")
+		}
+		cell[ptr] = stringify(cell[ptr]) as u8"
+    };
+}
 
-// #[macro_export]
-// macro_rules! StrFnV {
-//     () => {
-//         ""
-//     };
-// }
+#[macro_export]
+macro_rules! StrFnR {
+    () => {
+        "if ptr >= 10 {
+			panic!(\"You cannot use `\\\"` with an address greater than 10, you used \{\}\", ptr);
+		}
+		ptr = stringify!(ptr) as u8;"
+    };
+}
