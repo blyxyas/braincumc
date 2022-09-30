@@ -28,7 +28,24 @@ macro_rules! BoilerplateStart {
 use std::io::stdin;
 use std::collections::VecDeque;
 use rand::Rng;
-	
+
+#[inline]
+fn num_to_str(num: u8) -> u8 {
+	match num {
+		0 => 48,
+		1 => 49,
+		2 => 50,
+		3 => 51,
+		4 => 52,
+		5 => 53,
+		6 => 54,
+		7 => 55,
+		8 => 56,
+		9 => 57,
+		_ => panic!(\"You cannot use '\\\"' on a number greater than 10, you used {num}\")
+	}
+}
+
 fn main() {
 let mut ptr: usize = 0;
 let mut cell: Vec<u8> = Vec::new();
@@ -330,19 +347,14 @@ macro_rules! PrintRInt {
 macro_rules! StrFnV {
     () => {
         "
-		if cell[ptr] >= 10 {
-			panic!(\"You cannot use `\\\"` with an address greater than 10\")
-		}
-		cell[ptr] = stringify(cell[ptr]) as u8"
+		cell[ptr] = num_to_str(cell[ptr]);"
     };
 }
 
 #[macro_export]
 macro_rules! StrFnR {
     () => {
-        "if ptr >= 10 {
-			panic!(\"You cannot use `\\\"` with an address greater than 10, you used \{\}\", ptr);
-		}
-		ptr = stringify!(ptr) as u8;"
+        "
+		ptr = num_to_str(ptr);"
     };
 }
