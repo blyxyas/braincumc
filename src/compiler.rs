@@ -152,6 +152,5 @@ pub fn compile<'a>(TokenTree: TokenTree) -> ResBuf<'a> {
     }
 
     Buf.write(BoilerplateEnd!());
-	dbg!("{:#?}", &Buf);
     return Buf;
 }
