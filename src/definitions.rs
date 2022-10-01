@@ -291,10 +291,9 @@ macro_rules! RandR {
 #[macro_export]
 macro_rules! RandV {
     () => {
-		"cell[ptr] += fastrand::u8(..)"
+		"cell[ptr] += fastrand::u8(..);"
     };
 }
-// cell[ptr] = rand::thread_rng().gen_range(0..=255);
 
 #[macro_export]
 macro_rules! AskStr {
@@ -340,8 +339,6 @@ macro_rules! PrintRInt {
         "println!(\"{}\", ptr);"
     };
 }
-
-// TODO: Waiting for response on #13
 
 #[macro_export]
 macro_rules! StrFnV {

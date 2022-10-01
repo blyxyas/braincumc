@@ -2,6 +2,8 @@
 
 The compiler for the Braincum esolang, interpreter (as well as documentation) is [here](https://github.com/qexat/braincum)
 
+Keep in mind that I'm not the original creator of the language, and this compiler isn't maintained 100% in sync with the original interpreter (some things may change.)
+
 ## Installation
 
 Requirements:
@@ -47,3 +49,7 @@ Now you can execute the new executable!
 (This will output `2`)
 
 Keep in mind that this process will create a new directory in the current directory (called `target_bc`) to host the dependencies and cache the build. If you decide to delete this directory braincumc will need to create it again for the next build.
+
+## License
+
+The license is kept in the LICENSE file, this software uses the MIT License.

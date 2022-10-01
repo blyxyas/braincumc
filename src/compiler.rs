@@ -39,8 +39,6 @@ use crate::{
 
 };
 
-// Actually not needed debug.
-#[derive(Debug)]
 enum Subject {
 	Val,
 	Ref
