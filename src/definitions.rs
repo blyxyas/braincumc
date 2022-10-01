@@ -71,9 +71,6 @@ macro_rules! IncV {
 macro_rules! IncR {
     () => {
         "
-		if ptr == cap {
-			
-		}
 		ptr += 1;"
     };
 }
@@ -156,7 +153,7 @@ macro_rules! CharFnR {
     () => {
         "if ptr < 32 {
 			ptr += 32;
-		} else if ptr >= 256 {
+		} else if ptr > 255 {
 			ptr = ptr % 255;
 		};"
     };
@@ -167,7 +164,7 @@ macro_rules! CharFnV {
     () => {
         "if cell[ptr] < 32 {
 			cell[ptr] += 32;
-		} else if cell[ptr] >= 256 {
+		} else if cell[ptr] > 255 {
 			cell[ptr] = cell[ptr] % 255
 		};"
     };
@@ -202,7 +199,7 @@ macro_rules! AskIntR {
 	() => {
 		"stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
 		
-		ptr = input_string.parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 255\");"
+		ptr = input_string.trim().parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 255\");"
 	};
 }
 
@@ -211,7 +208,7 @@ macro_rules! AskIntV {
 	() => {
 		"stdin().read_line(&mut input_string).ok().expect(\"Failed to read line\");
 		
-		cell[ptr] = input_string.parse::<usize>().expect(\"Couldn't parse your input to a number between 0 and 256\");"
+		cell[ptr] = input_string.trim().parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 256\");"
 	};
 }
 

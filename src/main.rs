@@ -24,8 +24,8 @@ struct Args {
     inputfile: String,
     #[clap(short)]
     outputfile: String,
-	#[clap(short, long)]
-	release: bool
+    #[clap(short, long)]
+    release: bool,
 }
 
 #[derive(PartialEq, Debug)]
@@ -58,39 +58,37 @@ pub enum Token {
 type ResBuf<'a> = Vec<&'a str>;
 type TokenTree = Vec<Token>;
 
-fn main() -> std::io::Result<()>{
+fn main() -> std::io::Result<()> {
     let args = Args::parse();
     // Read file
     let data = fs::read_to_string(&args.inputfile)
         .expect(&format!("Couldn't read file {}", &args.inputfile));
     let parsed: TokenTree = parse(data);
     let compiled: ResBuf = compiler::compile(parsed);
-	create_and_convert(compiled, &args.outputfile, args.release)?;
-	
-	Ok(())
+    create_and_convert(compiled, &args.outputfile, args.release)?;
+
+    Ok(())
 }
 
 fn parse<'a>(data: String) -> TokenTree {
     use Token::*;
-	let mut inComment: bool = false;
+    let mut inComment: bool = false;
     let mut TokenTree: TokenTree = Vec::new();
     for (i, ch) in data.chars().enumerate() {
         if ch == ')' {
-			inComment = false;
+            inComment = false;
+            continue;
+        } else if inComment {
+            continue;
+        } else if ch == ' ' {
+            continue;
+        } else if ch == '(' {
+            inComment = true;
+            continue;
+        } else if ch == '\n' {
+            continue;
+        } else if ch == '\t' {
 			continue;
-		}
-
-		else if inComment {
-			continue;
-		}
-
-		else if ch == ' ' {
-			continue
-		}
-
-		else if ch == '(' {
-			inComment = true;
-			continue
 		}
 
         TokenTree.push(match ch {
@@ -117,7 +115,7 @@ fn parse<'a>(data: String) -> TokenTree {
             'r' => RandVR,
             's' => SumAllVR,
             'm' => MulVxR,
-			_ => panic!("Unknown character: {} @ character no. {}", ch, i),
+            _ => panic!("Unknown character: {} @ character no. {}", ch, i),
         })
     }
     return TokenTree;
