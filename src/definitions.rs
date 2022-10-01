@@ -16,7 +16,7 @@ macro_rules! CargoBoilerplateSmall {
 		codegen-units = 1
 		
 		[dependencies]
-		rand = \"0.8.5\"
+		fastrand = \"1.8.0\"
 		"
 	};
 }
@@ -27,7 +27,6 @@ macro_rules! BoilerplateStart {
         "#![allow(warnings)]
 use std::io::stdin;
 use std::collections::VecDeque;
-use rand::Rng;
 
 #[inline]
 fn num_to_str(num: u8) -> u8 {
@@ -210,7 +209,6 @@ macro_rules! AskIntR {
 #[macro_export]
 macro_rules! AskIntV {
 	() => {
-		// rand_string = rand_string();
 		"stdin().read_line(&mut input_string).ok().expect(\"Failed to read line\");
 		
 		cell[ptr] = input_string.parse::<usize>().expect(\"Couldn't parse your input to a number between 0 and 256\");"
@@ -285,16 +283,18 @@ macro_rules! SumAllR {
 #[macro_export]
 macro_rules! RandR {
     () => {
-        "ptr = rand::thread_rng().gen_range(0..=255);"
+        "ptr += fastrand::u8(..);
+		"
     };
 }
 
 #[macro_export]
 macro_rules! RandV {
     () => {
-        "cell[ptr] = rand::thread_rng().gen_range(0..=255);"
+		"cell[ptr] += fastrand::u8(..)"
     };
 }
+// cell[ptr] = rand::thread_rng().gen_range(0..=255);
 
 #[macro_export]
 macro_rules! AskStr {

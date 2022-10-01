@@ -11,10 +11,10 @@ use std::fs;
 
 use clap::Parser;
 
-use crate::conversion::create_and_convert;
 mod buffer;
 mod compiler;
 mod conversion;
+use conversion::create_and_convert;
 
 #[macro_use]
 mod definitions;
