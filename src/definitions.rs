@@ -70,8 +70,7 @@ macro_rules! IncV {
 #[macro_export]
 macro_rules! IncR {
     () => {
-        "
-		ptr += 1;"
+        "ptr += 1;"
     };
 }
 
@@ -152,10 +151,10 @@ macro_rules! ConvertV {
 macro_rules! CharFnR {
     () => {
         "if ptr < 32 {
-			ptr += 32;
-		} else if ptr > 255 {
-			ptr = ptr % 255;
-		};"
+	ptr += 32;
+} else if ptr > 255 {
+	ptr = ptr % 255;
+};"
     };
 }
 
@@ -163,10 +162,10 @@ macro_rules! CharFnR {
 macro_rules! CharFnV {
     () => {
         "if cell[ptr] < 32 {
-			cell[ptr] += 32;
-		} else if cell[ptr] > 255 {
-			cell[ptr] = cell[ptr] % 255
-		};"
+	cell[ptr] += 32;
+} else if cell[ptr] > 255 {
+	cell[ptr] = cell[ptr] % 255
+};"
     };
 }
 
@@ -199,7 +198,7 @@ macro_rules! AskIntR {
 	() => {
 		"stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
 		
-		ptr = input_string.trim().parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 255\");"
+ptr = input_string.trim().parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 255\");"
 	};
 }
 
@@ -207,8 +206,8 @@ macro_rules! AskIntR {
 macro_rules! AskIntV {
 	() => {
 		"stdin().read_line(&mut input_string).ok().expect(\"Failed to read line\");
-		
-		cell[ptr] = input_string.trim().parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 256\");"
+
+cell[ptr] = input_string.trim().parse::<u8>().expect(\"Couldn't parse your input to a number between 0 and 256\");"
 	};
 }
 
@@ -216,7 +215,7 @@ macro_rules! AskIntV {
 macro_rules! ShiftL {
     () => {
         "cell[..].rotate_left(1);
-		cell[-1] = 0;"
+cell[-1] = 0;"
     };
 }
 
@@ -224,7 +223,7 @@ macro_rules! ShiftL {
 macro_rules! ShiftR {
     () => {
         "cell[..].rotate_right(1);
-		cell[0] = 0;"
+cell[0] = 0;"
     };
 }
 
@@ -260,28 +259,26 @@ macro_rules! PrintRChar {
 macro_rules! SumAllV {
     () => {
         "for i in 0..ptr {
-			cell[ptr] += cell[i];
-		}"
+cell[ptr] += cell[i];
+}"
     };
 }
 
 #[macro_export]
 macro_rules! SumAllR {
     () => {
-        "
-		let mut sum = 0;
-		for i in 0..ptr {
-			sum += cell[i];
-		}
-		ptr = sum;"
+        "let mut sum = 0;
+for i in 0..ptr {
+	sum += cell[i];
+}
+ptr = sum;"
     };
 }
 
 #[macro_export]
 macro_rules! RandR {
     () => {
-        "ptr += fastrand::u8(..);
-		"
+        "ptr += fastrand::u8(..);"
     };
 }
 
@@ -297,9 +294,9 @@ macro_rules! AskStr {
 	() => {
 		"stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
 		
-		for i in input_string.chars().count() {
-			cell[ptr + i] = input_string.chars().nth(i)
-		}"
+for i in input_string.chars().count() {
+	cell[ptr + i] = input_string.chars().nth(i)
+}"
 	};
 }
 
@@ -307,10 +304,10 @@ macro_rules! AskStr {
 macro_rules! PrintLastInpOrAsk {
     () => {
         "if input_string.is_empty() {
-			// Take input
-			stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
-		}
-		println!(\"{}\", input_string())"
+// Take input
+stdin().read_line(&mut input_string).ok.expect(\"Failed to read line\");
+}
+println!(\"{}\", input_string())"
     };
 }
 
@@ -318,8 +315,8 @@ macro_rules! PrintLastInpOrAsk {
 macro_rules! PrintNStr {
     () => {
         "for i in ptr..cell[ptr] {
-			print!(\"{}\", cell[i] as char);
-		}"
+print!(\"{}\", cell[i] as char);
+}"
     };
 }
 
@@ -340,15 +337,13 @@ macro_rules! PrintRInt {
 #[macro_export]
 macro_rules! StrFnV {
     () => {
-        "
-		cell[ptr] = num_to_str(cell[ptr]);"
+        "cell[ptr] = num_to_str(cell[ptr]);"
     };
 }
 
 #[macro_export]
 macro_rules! StrFnR {
     () => {
-        "
-		ptr = num_to_str(ptr);"
+        "ptr = num_to_str(ptr);"
     };
 }
