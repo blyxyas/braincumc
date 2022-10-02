@@ -75,21 +75,13 @@ fn parse<'a>(data: String) -> TokenTree {
     let mut inComment: bool = false;
     let mut TokenTree: TokenTree = Vec::new();
     for (i, ch) in data.chars().enumerate() {
-        if ch == ')' {
-            inComment = false;
-            continue;
-        } else if inComment {
-            continue;
-        } else if ch == ' ' {
-            continue;
-        } else if ch == '(' {
-            inComment = true;
-            continue;
-        } else if ch == '\n' {
-            continue;
-        } else if ch == '\t' {
+		if ch == '(' { inComment = true; continue; }
+		else if ch == ')' { inComment = false; continue; }
+
+		if inComment || ch == ' ' || ch == '\n' || ch == '\t' {
 			continue;
 		}
+
 
         TokenTree.push(match ch {
             '&' => Ref,
