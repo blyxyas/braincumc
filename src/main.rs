@@ -81,8 +81,8 @@ fn main() -> std::io::Result<()> {
 		println!("{}", "There were errors in the compilation process. Fix them and try again.".yellow());
 	}
 
-    // let compiled: ResBuf = compiler::compile(parsed);
-    // create_and_convert(compiled, &args.outputfile, args.release)?;
+    let compiled: ResBuf = compiler::compile(parsed);
+    create_and_convert(compiled, &args.outputfile, args.release)?;
 
     Ok(())
 }
