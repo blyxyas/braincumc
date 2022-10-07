@@ -76,17 +76,19 @@ pub mod syntax {
             "[{} @ Char. no {}] {}\n\n{}\n{}",
             "ERROR".red().bold(),
             charno.to_string().blue(),
-            msg.yellow().bold(),
+            msg.bright_red().bold(),
             span,
-			arrow.red()
+			arrow.red().bold()
         );
     }
 
+	#[inline(always)]
     fn throw_err_no_char(msg: &str) {
         println!("[{}] {}", "ERROR".red(), msg.yellow());
     }
     /// Checks that a loop starts and ends.
     pub fn loop_check(tt: &TokenTree) {
+
         let mut loop_count: i8 = 0;
         for token in tt {
             match token {
@@ -98,8 +100,8 @@ pub mod syntax {
 
         if loop_count != 0 {
             // Where's the bug?
+			let mut loop_symbol_table: Vec<usize> = Vec::new();
             if loop_count.is_positive() {
-                let mut loop_symbol_table: Vec<usize> = Vec::new();
                 for (i, token) in tt.iter().enumerate() {
                     match token {
                         Token::StartLoop => {
@@ -113,7 +115,21 @@ pub mod syntax {
                 }
 
                 throw_err_with_char("This loop isn't closed", loop_symbol_table[0], tt);
-            }
+            } else {
+				for (i, token) in tt.iter().enumerate() {
+                    match token {
+                        Token::EndLoop => {
+                            loop_symbol_table.push(i);
+                        }
+                        Token::StartLoop => {
+                            loop_symbol_table.pop();
+                        }
+                        _ => continue,
+                    }
+                }
+
+                throw_err_with_char("This closing bracket is unmatched", loop_symbol_table[loop_symbol_table.len() - 1], tt);
+			}
         }
     }
 }
