@@ -3,7 +3,6 @@
 //! Braincum designed & originally implemented by qexat (Clarisse) @ github.com/qexat
 //! Braincum compiler made by blyxyas (Alex) @ github.com/blyxyas
 //!
-//! As of this day, the project is very recent, the docs are just out. So I'm going to just improvise their following until the creator updates their project to add more information (some things are a little bit vague.)
 
 #![allow(non_snake_case)]
 
@@ -15,6 +14,7 @@ mod buffer;
 mod compiler;
 mod conversion;
 use conversion::create_and_convert;
+mod extra;
 
 #[macro_use]
 mod definitions;
@@ -64,8 +64,12 @@ fn main() -> std::io::Result<()> {
     let data = fs::read_to_string(&args.inputfile)
         .expect(&format!("Couldn't read file {}", &args.inputfile));
     let parsed: TokenTree = parse(data);
-    let compiled: ResBuf = compiler::compile(parsed);
-    create_and_convert(compiled, &args.outputfile, args.release)?;
+
+	// Check for syntax errors:
+	extra::syntax::loop_check(&parsed);
+
+    // let compiled: ResBuf = compiler::compile(parsed);
+    // create_and_convert(compiled, &args.outputfile, args.release)?;
 
     Ok(())
 }
