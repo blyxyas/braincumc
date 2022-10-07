@@ -44,29 +44,41 @@ pub mod syntax {
         // Make sure that only characters that exist in the input are shown.
 
         let span: String;
+		let highlight: usize;
         if charno < 8 {
             if charno + 8 > tt.len() {
                 span = converted_tt[..].iter().collect();
-            } else {
-                span = converted_tt[..=charno + 8].iter().collect();
-            }
+				highlight = charno;
+			} else {
+                span = converted_tt[..charno + 8].iter().collect();
+				highlight = charno;
+			}
         } else {
             if charno + 8 > tt.len() {
                 span = converted_tt[charno - 8..].iter().collect();
-            } else {
-				span = converted_tt[charno - 8..=charno + 8].iter().collect();
+				highlight = 8;
+			} else {
+				span = converted_tt[charno - 8..charno + 8].iter().collect();
+				highlight = 8;
 			}
         }
+
+		let mut arrow: String = String::new();
+		for _ in 0..highlight {
+			arrow.push(' ');
+		}
+		arrow.push('^');
 
         // This will look something like: '$[&+]#&+$-['
         // '#' being the character to highlight ^
 
         println!(
-            "[{} @ Char. no {}] {}\n\n{}",
-            "ERROR".red(),
+            "[{} @ Char. no {}] {}\n\n{}\n{}",
+            "ERROR".red().bold(),
             charno.to_string().blue(),
-            msg.yellow(),
+            msg.yellow().bold(),
             span,
+			arrow.red()
         );
     }
 
