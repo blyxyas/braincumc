@@ -79,6 +79,7 @@ fn main() -> std::io::Result<()> {
 
 	if terminate {
 		println!("{}", "There were errors in the compilation process. Fix them and try again.".yellow());
+		std::process::exit(1);
 	}
 
     let compiled: ResBuf = compiler::compile(parsed);
