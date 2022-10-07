@@ -8,13 +8,17 @@
 
 use std::fs;
 
+use colored::*;
 use clap::Parser;
 
 mod buffer;
 mod compiler;
 mod conversion;
 use conversion::create_and_convert;
+
+#[macro_use]
 mod extra;
+use extra::syntax::*;
 
 #[macro_use]
 mod definitions;
@@ -66,7 +70,16 @@ fn main() -> std::io::Result<()> {
     let parsed: TokenTree = parse(data);
 
 	// Check for syntax errors:
-	extra::syntax::loop_check(&parsed);
+	let mut terminate: bool = false;
+	test_lints! {
+		parsed, terminate,
+		loop_check
+		repeated_subjects
+	}
+
+	if terminate {
+		println!("{}", "There were errors in the compilation process. Fix them and try again.".yellow());
+	}
 
     // let compiled: ResBuf = compiler::compile(parsed);
     // create_and_convert(compiled, &args.outputfile, args.release)?;
