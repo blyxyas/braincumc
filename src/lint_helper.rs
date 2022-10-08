@@ -14,13 +14,6 @@ macro_rules! test_tt_lints {
 				}
 			)
 			*
-			if TERMINATE {
-				println!(
-					"{}",
-					"There were errors in the compilation process. Fix them and try again.".yellow()
-				);
-				std::process::exit(1);
-			}
 		};
 	}
 
