@@ -8,7 +8,6 @@
 
 use std::{
     fs,
-    io::empty,
 };
 
 use clap::Parser;
