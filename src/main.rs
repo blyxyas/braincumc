@@ -18,6 +18,7 @@ use conversion::create_and_convert;
 
 #[macro_use]
 mod lint_helper;
+use lint_helper::*;
 mod lints;
 use lints::*;
 
@@ -63,27 +64,25 @@ pub enum Token {
 type ResBuf<'a> = Vec<&'a str>;
 type TokenTree = Vec<Token>;
 
+pub static mut TERMINATE: bool = false;
+
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
     // Read file
     let data = fs::read_to_string(&args.inputfile)
         .expect(&format!("Couldn't read file {}", &args.inputfile));
+
     let parsed: TokenTree = parse(data);
 
     // Check for syntax errors:
-    let mut terminate: bool = false;
-    test_lints! {
-        parsed, terminate,
-        loop_check
-        repeated_subjects
-    }
 
-    if terminate {
-        println!(
-            "{}",
-            "There were errors in the compilation process. Fix them and try again.".yellow()
-        );
-        std::process::exit(1);
+    unsafe {
+        test_tt_lints! {
+            parsed;
+
+            loop_check
+            repeated_subjects
+        }
     }
 
     let compiled: ResBuf = compiler::compile(parsed);
@@ -133,7 +132,13 @@ fn parse<'a>(data: String) -> TokenTree {
             'r' => RandVR,
             's' => SumAllVR,
             'm' => MulVxR,
-            _ => panic!("Unknown character: {} @ character no. {}", ch, i),
+            _ => {
+                throw_err_src!(format!("Unknown Character: {}", ch), i, &data);
+                unsafe {
+                    TERMINATE = true;
+                }
+                continue;
+            }
         })
     }
     return TokenTree;

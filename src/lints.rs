@@ -1,4 +1,5 @@
 use crate::{Token, TokenTree};
+use crate::lint_helper::*;
 
 /// Checks that a loop starts and ends.
 pub fn loop_check(tt: &TokenTree) -> bool {
@@ -52,6 +53,7 @@ pub fn loop_check(tt: &TokenTree) -> bool {
 }
 
 pub fn repeated_subjects(tt: &TokenTree) -> bool {
+
 	for i in 1..tt.len() - 1 {
 		match tt[i] {
 			Token::Ref => {
@@ -73,3 +75,4 @@ pub fn repeated_subjects(tt: &TokenTree) -> bool {
 	}
 	return true;
 }
+

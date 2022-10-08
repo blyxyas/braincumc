@@ -1,25 +1,53 @@
-
 use colored::*;
 
 use crate::Token;
 use crate::TokenTree;
 
 #[macro_export]
-macro_rules! test_lints {
-		($tt: ident, $term: expr,
+macro_rules! test_tt_lints {
+		($tt: ident;
 			$($lint: ident)
 		*) => {
 			$(
 				if !$lint(&$tt) {
-					$term = true;
+					TERMINATE = true;
 				}
 			)
 			*
+			if TERMINATE {
+				println!(
+					"{}",
+					"There were errors in the compilation process. Fix them and try again.".yellow()
+				);
+				std::process::exit(1);
+			}
 		};
 	}
 
+#[macro_export]
+macro_rules! test_src_lints {
+	($src: ident,
+		$($lint: ident)
+	*) => {
+		let mut terminate: bool = false;
+			$(
+				if !$lint(&$src) {
+					terminate = true;
+				}
+			)
+			*
+			if terminate {
+				println!(
+					"{}",
+					"There were errors in the compilation process. Fix them and try again.".yellow()
+				);
+				std::process::exit(1);
+			}
+	};
+}
+
 /// Converts a token tree into it's original character tree.
-fn tt_to_char<'a>(tt: &TokenTree) -> Vec<char> {
+pub fn tt_to_char<'a>(tt: &TokenTree) -> Vec<char> {
     let mut charvec: Vec<char> = Vec::new();
     for token in tt {
         charvec.push(match token {
@@ -51,7 +79,7 @@ fn tt_to_char<'a>(tt: &TokenTree) -> Vec<char> {
     charvec
 }
 
-fn __throw_err(msg: &str, charno: usize, tt: &TokenTree) {
+pub fn __throw_err(msg: &str, charno: usize, tt: &TokenTree) {
     // Convert TT to characters:
     let converted_tt = tt_to_char(tt);
 
@@ -99,7 +127,52 @@ fn __throw_err(msg: &str, charno: usize, tt: &TokenTree) {
     );
 }
 
-fn __throw_err_sugg(msg: &str, charno: usize, tt: &TokenTree, sugg: &str) {
+pub fn __throw_err_src(msg: String, charno: usize, src: &str) {
+    // Make sure that only characters that exist in the input are shown.
+
+    let span: &str;
+    let highlight: usize;
+    if charno < 8 {
+        if charno + 8 > src.len() {
+            span = &src[..];
+            highlight = charno;
+        } else {
+            span = &src[..charno + 8];
+            highlight = charno;
+        }
+    } else {
+        if charno + 8 > src.len() {
+            span = &src[charno - 8..];
+            highlight = 8;
+        } else {
+            span = &src[charno - 8..charno + 8];
+            highlight = 8;
+        }
+    }
+
+    let mut arrow: String = String::new();
+    for _ in 0..highlight {
+        arrow.push(' ');
+    }
+    arrow.push('^');
+
+    // This will look something like: '$[&+]5&+$-['
+    // '3' being the character to highlight ^
+
+    println!(
+        "{}\n[{} @ Char. no {}] {}\n\n{}\n{}",
+        "-------------------------------------------------"
+            .red()
+            .bold(),
+        "ERROR".red().bold(),
+        charno.to_string().blue(),
+        msg.bright_red().bold(),
+        span,
+        arrow.red().bold()
+    );
+}
+
+pub fn __throw_err_sugg(msg: &str, charno: usize, tt: &TokenTree, sugg: &str) {
     // Convert TT to characters:
     let converted_tt = tt_to_char(tt);
 
@@ -132,7 +205,8 @@ fn __throw_err_sugg(msg: &str, charno: usize, tt: &TokenTree, sugg: &str) {
     arrow.push('^');
 
     // This will look something like: '$[&+]#&+$-['
-    // '#' being the character to highlight ^
+    //                                      ^
+    // '#' being the character to highlight
 
     println!(
         "{}\n[{} @ Char. no {}] {}\n\n{}\n{}\n{}{}",
@@ -148,12 +222,23 @@ fn __throw_err_sugg(msg: &str, charno: usize, tt: &TokenTree, sugg: &str) {
         sugg
     );
 }
+
+#[macro_export]
 macro_rules! throw_err {
     ($msg: expr, $charno: expr, $tt: ident) => {
         __throw_err($msg, $charno, $tt);
         return false;
     };
 }
+
+#[macro_export]
+macro_rules! throw_err_src {
+	($msg: expr, $charno: expr, $src: expr) => {
+		__throw_err_src($msg, $charno, $src);
+	};
+}
+
+#[macro_export]
 macro_rules! throw_err_sugg {
 		($msg: expr, $charno: expr, $tt: ident, $($sugg: expr), *) => {
 			__throw_err_sugg($msg, $charno, $tt, &format!($($sugg), *));
