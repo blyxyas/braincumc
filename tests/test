@@ -1,8 +1,0 @@
-#!/bin/bash
-
-for file in src/*
-do
-	echo ":: Running $file"
-	cargo run "$file" -o "out/${file::-3}"
-	out/"${file::-3}"
-done

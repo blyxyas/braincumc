@@ -6,7 +6,7 @@
 
 #![allow(non_snake_case)]
 
-use std::fs;
+use std::{fs, io::empty};
 
 use clap::Parser;
 use colored::*;
@@ -82,6 +82,7 @@ fn main() -> std::io::Result<()> {
 
             loop_check
             repeated_subjects
+			empty_loop
         }
     }
 
@@ -142,4 +143,70 @@ fn parse<'a>(data: String) -> TokenTree {
         })
     }
     return TokenTree;
+}
+
+#[cfg(test)]
+mod tests {
+	use std::fs::{File, self};
+	use difference::{self, Changeset, Difference};
+	use term;
+
+	fn get_diff(text1: &str, text2: &str) -> bool {
+		let mut t = term::stdout().unwrap();
+
+    let Changeset { diffs, .. } = Changeset::new(text1, text2, "");
+
+	if diffs.is_empty() {
+		return true;
+	}
+
+    for c in &diffs {
+        match *c {
+            Difference::Same(ref z) => {
+                t.fg(term::color::RED).unwrap();
+                write!(t, "{}", z);
+            }
+            Difference::Rem(ref z) => {
+                t.fg(term::color::WHITE).unwrap();
+                t.bg(term::color::RED).unwrap();
+                write!(t, "{}", z);
+                t.reset().unwrap();
+            }
+            _ => (),
+        }
+    }
+    t.reset().unwrap();
+
+    writeln!(t, "");
+
+    for c in &diffs {
+        match *c {
+            Difference::Same(ref z) => {
+                t.fg(term::color::GREEN).unwrap();
+                write!(t, "{}", z);
+            }
+            Difference::Add(ref z) => {
+                t.fg(term::color::WHITE).unwrap();
+                t.bg(term::color::GREEN).unwrap();
+                write!(t, "{}", z);
+                t.reset().unwrap();
+            }
+            _ => (),
+        }
+    }
+    t.reset().unwrap();
+    t.flush().unwrap();
+	false
+	}
+
+	#[test]
+	pub fn test_all() {
+		let mut exstderr = fs::read_to_string("../expected-stderr.txt").expect("Couldn't read file expected-stderr.txt");
+		
+		let parsed: TokenTree = parse(data);
+
+		if get_diff(text1, text2) {
+
+		}
+	}
 }
