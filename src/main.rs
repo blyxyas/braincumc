@@ -8,8 +8,8 @@
 
 use std::fs;
 
-use colored::*;
 use clap::Parser;
+use colored::*;
 
 mod buffer;
 mod compiler;
@@ -17,8 +17,9 @@ mod conversion;
 use conversion::create_and_convert;
 
 #[macro_use]
-mod extra;
-use extra::syntax::*;
+mod lint_helper;
+mod lints;
+use lints::*;
 
 #[macro_use]
 mod definitions;
@@ -69,18 +70,21 @@ fn main() -> std::io::Result<()> {
         .expect(&format!("Couldn't read file {}", &args.inputfile));
     let parsed: TokenTree = parse(data);
 
-	// Check for syntax errors:
-	let mut terminate: bool = false;
-	test_lints! {
-		parsed, terminate,
-		loop_check
-		repeated_subjects
-	}
+    // Check for syntax errors:
+    let mut terminate: bool = false;
+    test_lints! {
+        parsed, terminate,
+        loop_check
+        repeated_subjects
+    }
 
-	if terminate {
-		println!("{}", "There were errors in the compilation process. Fix them and try again.".yellow());
-		std::process::exit(1);
-	}
+    if terminate {
+        println!(
+            "{}",
+            "There were errors in the compilation process. Fix them and try again.".yellow()
+        );
+        std::process::exit(1);
+    }
 
     let compiled: ResBuf = compiler::compile(parsed);
     create_and_convert(compiled, &args.outputfile, args.release)?;
@@ -93,13 +97,17 @@ fn parse<'a>(data: String) -> TokenTree {
     let mut inComment: bool = false;
     let mut TokenTree: TokenTree = Vec::new();
     for (i, ch) in data.chars().enumerate() {
-		if ch == '(' { inComment = true; continue; }
-		else if ch == ')' { inComment = false; continue; }
+        if ch == '(' {
+            inComment = true;
+            continue;
+        } else if ch == ')' {
+            inComment = false;
+            continue;
+        }
 
-		if inComment || ch == ' ' || ch == '\n' || ch == '\t' {
-			continue;
-		}
-
+        if inComment || ch == ' ' || ch == '\n' || ch == '\t' {
+            continue;
+        }
 
         TokenTree.push(match ch {
             '&' => Ref,
