@@ -6,6 +6,14 @@ Keep in mind that I'm not the original creator of the language, and this compile
 
 ## Installation
 
+You can either download it in the *Releases* section or build it from source
+
+### Downloading the compiler
+
+Head up to [*Releases*](https://github.com/blyxyas/braincumc/releases)
+
+### Building from source
+
 Requirements:
 
 * Cargo

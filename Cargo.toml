@@ -5,6 +5,12 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+opt-level = "z"
+strip = true
+lto = false
+codegen-units = 1
+
 [dependencies]
 clap = { version = "3.2.17", features = ["derive"] }
 tempfile = "3.3.0"

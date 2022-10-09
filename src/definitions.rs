@@ -10,7 +10,7 @@ macro_rules! CargoBoilerplateSmall {
 		edition = \"2021\"
 		
 		[profile.release]
-		opt-lever = \"z\"
+		opt-level = \"z\"
 		strip = true
 		lto = true
 		codegen-units = 1
