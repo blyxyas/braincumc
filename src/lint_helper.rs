@@ -18,24 +18,28 @@ macro_rules! test_tt_lints {
 	}
 
 #[macro_export]
-macro_rules! test_src_lints {
-	($src: ident,
+macro_rules! test_tt_lints_warns {
+	($tt: ident;
 		$($lint: ident)
 	*) => {
-		let mut terminate: bool = false;
+		$(
+			$lint(&$tt);
+		)
+		*
+	};
+}
+
+#[macro_export]
+macro_rules! test_src_lints {
+	($src: ident;
+		$($lint: ident)
+	*) => {
 			$(
 				if !$lint(&$src) {
-					terminate = true;
+					TERMINATE = true;
 				}
 			)
 			*
-			if terminate {
-				println!(
-					"{}",
-					"There were errors in the compilation process. Fix them and try again.".yellow()
-				);
-				std::process::exit(1);
-			}
 	};
 }
 
@@ -120,7 +124,7 @@ pub fn __throw_err(msg: &str, charno: usize, tt: &TokenTree) {
     );
 }
 
-pub fn __throw_err_src(msg: String, charno: usize, src: &str) {
+pub fn __throw_err_src(msg: &str, charno: usize, src: &str) {
     // Make sure that only characters that exist in the input are shown.
 
     let span: &str;
@@ -216,7 +220,6 @@ pub fn __throw_err_sugg(msg: &str, charno: usize, tt: &TokenTree, sugg: &str) {
     );
 }
 
-
 pub fn __throw_warn(msg: &str, charno: usize, tt: &TokenTree) {
     // Convert TT to characters:
     let converted_tt = tt_to_char(tt);
@@ -265,7 +268,7 @@ pub fn __throw_warn(msg: &str, charno: usize, tt: &TokenTree) {
     );
 }
 
-pub fn __throw_warn_src(msg: String, charno: usize, src: &str) {
+pub fn __throw_warn_src(msg: &str, charno: usize, src: &str) {
     // Make sure that only characters that exist in the input are shown.
 
     let span: &str;
@@ -302,7 +305,7 @@ pub fn __throw_warn_src(msg: String, charno: usize, src: &str) {
         "-------------------------------------------------"
             .yellow()
             .bold(),
-        "ERROR".yellow().bold(),
+        "WARN".yellow().bold(),
         charno.to_string().blue(),
         msg.bright_yellow().bold(),
         span,
@@ -351,12 +354,59 @@ pub fn __throw_warn_sugg(msg: &str, charno: usize, tt: &TokenTree, sugg: &str) {
         "-------------------------------------------------"
             .yellow()
             .bold(),
-        "ERROR".yellow().bold(),
+        "WARN".yellow().bold(),
         charno.to_string().blue(),
         msg.bright_yellow().bold(),
         span,
         arrow.yellow().bold(),
         "Suggestion: ".green().bold(),
+        sugg
+    );
+}
+
+pub fn __throw_warn_sugg_src(msg: &str, charno: usize, src: &str, sugg: &str) {
+    // Make sure that only characters that exist in the input are shown.
+
+    let span: &str;
+    let highlight: usize;
+    if charno < 8 {
+        if charno + 8 > src.len() {
+            span = &src[..];
+            highlight = charno;
+        } else {
+            span = &src[..charno + 8];
+            highlight = charno;
+        }
+    } else {
+        if charno + 8 > src.len() {
+            span = &src[charno - 8..];
+            highlight = 8;
+        } else {
+            span = &src[charno - 8..charno + 8];
+            highlight = 8;
+        }
+    }
+
+    let mut arrow: String = String::new();
+    for _ in 0..highlight {
+        arrow.push(' ');
+    }
+    arrow.push('^');
+
+    // This will look something like: '$[&+]5&+$-['
+    // '3' being the character to highlight ^
+
+    println!(
+        "{}\n[{} @ Char. no {}] {}\n\n{}\n{}\n{}{}",
+        "-------------------------------------------------"
+            .yellow()
+            .bold(),
+        "WARN".yellow().bold(),
+        charno.to_string().blue(),
+        msg.bright_yellow().bold(),
+        span,
+        arrow.yellow().bold(),
+		"Suggestion: ".green().bold(),
         sugg
     );
 }
@@ -367,7 +417,7 @@ macro_rules! throw_err {
         __throw_err($msg, $charno, $tt);
         return false;
     };
-	(@warn $msg: expr, $charno: expr, $tt: ident) => {
+    (@warn $msg: expr, $charno: expr, $tt: ident) => {
         __throw_err($msg, $charno, $tt);
         return false;
     };
@@ -375,24 +425,34 @@ macro_rules! throw_err {
 
 #[macro_export]
 macro_rules! throw_err_src {
-	($msg: expr, $charno: expr, $src: expr) => {
-		__throw_err_src($msg, $charno, $src);
-	};
-	(@warn $msg: expr, $charno: expr, $src: expr) => {
-		__throw_warn_src($msg, $charno, $src);
-	};
+    ($msg: expr, $charno: expr, $src: expr) => {
+        __throw_err_src($msg, $charno, $src);
+    };
+    (@warn $msg: expr, $charno: expr, $src: expr) => {
+        __throw_warn_src($msg, $charno, $src);
+    };
 }
 
 #[macro_export]
 macro_rules! throw_err_sugg {
-		($msg: expr, $charno: expr, $tt: ident, $($sugg: expr), *) => {
-			__throw_err_sugg($msg, $charno, $tt, &format!($($sugg), *));
+		($msg: expr, $charno: expr, $tt: ident, $sugg: expr) => {
+			__throw_err_sugg($msg, $charno, $tt, $sugg);
 			return false;
 		};
-		(@warn $msg: expr, $charno: expr, $tt: ident, $($sugg: expr), *) => {
-			__throw_warn_sugg($msg, $charno, $tt, &format!($($sugg), *));
+		(@warn $msg: expr, $charno: expr, $tt: ident, $sugg: expr) => {
+			__throw_warn_sugg($msg, $charno, $tt, $sugg);
 			return false;
 		};
 	}
 
-
+	#[macro_export]
+macro_rules! throw_err_sugg_src {
+		($msg: expr, $charno: expr, $src: expr, $sugg: expr) => {
+			__throw_err_sugg_src($msg, $charno, $tt, $sugg);
+			return false;
+		};
+		(@warn $msg: expr, $charno: expr, $src: expr, $sugg: expr) => {
+			__throw_warn_sugg_src($msg, $charno, $src, $sugg);
+			return false;
+		};
+	}

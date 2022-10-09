@@ -74,6 +74,13 @@ fn main() -> std::io::Result<()> {
     let data = fs::read_to_string(&args.inputfile)
         .expect(&format!("Couldn't read file {}", &args.inputfile));
 
+	// unsafe {
+	// 	test_src_lints! {
+	// 		data;
+
+	// 	}
+	// }
+
     let parsed: TokenTree = parse(data);
 
     // Check for syntax errors:
@@ -83,9 +90,13 @@ fn main() -> std::io::Result<()> {
             parsed;
 
             loop_check
-            repeated_subjects
-            empty_loop
         }
+		test_tt_lints_warns! {
+			parsed;
+
+			repeated_subjects
+			empty_loop
+		}
 		if TERMINATE {
 			println!(
 				"{}",
@@ -143,7 +154,7 @@ fn parse<'a>(data: String) -> TokenTree {
             's' => SumAllVR,
             'm' => MulVxR,
             _ => {
-                throw_err_src!(format!("Unknown Character: {}", ch), i, &data);
+                throw_err_src!(&format!("Unknown Character: {}", ch), i, &data);
                 unsafe {
                     TERMINATE = true;
                 }

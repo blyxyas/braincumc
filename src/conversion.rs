@@ -35,6 +35,8 @@ pub fn create_and_convert(resbuf: ResBuf, output_file: &str, release: bool) -> s
     std::fs::write("target_bc/src/main.rs", resbuf.join("\n").as_bytes())
         .expect("Couldn't write to target_bc/src/main.rs");
 
+	println!("Compiling the source, this could take a few seconds...");
+
     // build and move
     if release {
         Command::new("cargo")
